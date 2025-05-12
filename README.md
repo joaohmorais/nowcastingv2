@@ -1,6 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<figure>
+<img
+src="https://github.com/joaohmorais/nowcastingv2/blob/50ed31579f9f9ea7926efd34a005848721a1b064/assets/logo.png?raw=true"
+alt="Logo" />
+<figcaption aria-hidden="true">Logo</figcaption>
+</figure>
+
 # nowcastingv2
 
 <!-- badges: start -->
@@ -81,7 +88,6 @@ ncast_fit <- dengue_rio |>
     max_delay = 15,
     days_forecast = 5
   )
-#> [1] "2024-01-18"
 ```
 
 The resulting object is a list of 4 `tibbles`, but the main one is
@@ -109,7 +115,7 @@ ncast_fit$daily_estimates %>%
   theme(legend.position = "top")
 ```
 
-<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 We can check how the delay effects change over time:
 
@@ -118,12 +124,12 @@ head(ncast_fit$delay_matrix_df)
 #> # A tibble: 6 × 11
 #>   week_id epi_week epi_year delay   mean     sd  q_025   q_50   q_975   mode          kld
 #>     <int>    <dbl>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>        <dbl>
-#> 1       1        1     2023     0 -1.77  0.187  -2.15  -1.77  -1.41   -1.77  0.0000000714
-#> 2       1        1     2023     1 -0.319 0.132  -0.595 -0.314 -0.0726 -0.294 0.000000222 
-#> 3       1        1     2023     2  0.363 0.110   0.137  0.366  0.571   0.366 0.000000150 
-#> 4       1        1     2023     3  0.587 0.106   0.361  0.593  0.780   0.609 0.000000520 
-#> 5       1        1     2023     4  0.727 0.0981  0.518  0.732  0.905   0.747 0.000000484 
-#> 6       1        1     2023     5  0.666 0.0923  0.472  0.670  0.836   0.684 0.000000317
+#> 1       1        1     2023     0 -1.77  0.188  -2.15  -1.77  -1.41   -1.77  0.0000000729
+#> 2       1        1     2023     1 -0.320 0.132  -0.596 -0.314 -0.0725 -0.294 0.000000231 
+#> 3       1        1     2023     2  0.363 0.110   0.136  0.366  0.571   0.366 0.000000156 
+#> 4       1        1     2023     3  0.587 0.106   0.361  0.593  0.780   0.609 0.000000515 
+#> 5       1        1     2023     4  0.726 0.0982  0.517  0.732  0.905   0.747 0.000000484 
+#> 6       1        1     2023     5  0.666 0.0924  0.471  0.670  0.836   0.684 0.000000321
 
 ncast_fit$delay_matrix_df %>% 
   mutate(week_date = aweek::get_date(epi_week, epi_year)) %>% 
@@ -136,7 +142,7 @@ ncast_fit$delay_matrix_df %>%
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 We can see that, in this example, notifications with 1-day delay became
 more frequent over time, and delays \>= 10 days had the opposite effect.
@@ -178,4 +184,4 @@ ncast_fit$delay_df %>%
   theme(legend.position = "top")
 ```
 
-<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />

@@ -4,6 +4,8 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+![Logo](https://github.com/joaohmorais/nowcastingv2/blob/50ed31579f9f9ea7926efd34a005848721a1b064/assets/logo.png?raw=true)
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
