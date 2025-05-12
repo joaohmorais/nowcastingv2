@@ -18,37 +18,130 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of nowcastingv2 is to ...
+`{nowcastingv2}` is based on existing package [nowcaster](https://covid19br.github.io/nowcaster/), and proposes an extension on the time structures used by `{INLA}` models allowing for time-varying delay effects. It is specially useful when the pattern of delays changes over time, which is feasible given differences in epidemic patterns and surveillance policies. It also extends the outputs generated, allowing for daily estimates visualizations, as well as time varying delays and day-of-week effects. 
+
+This R package was developed in Rio de Janeiro's Health Secretariat, at the [Center of Epidemiological Intelligence (CIE)](https://epirio.svs.rio.br/), during [Dengue 2024 outbreak](https://www.atachcommunity.com/resources/first-wins-library/effective-preparedness-and-response-to-dengue-through-multisectoral-coordination/) in the city.
 
 ## Installation
 
-You can install the development version of nowcastingv2 like so:
+This package depends on the `INLA` package, which is not on CRAN. You must install it manually:
 
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+```r
+install.packages("INLA", 
+  repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable")
+)
+
+```
+
+And then:
+
+```{r, eval=F}
+
+devtools::install_github("https://github.com/joaohmorais/nowcastingv2")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+We exemplify the package's functionalities with data from Rio's Dengue epidemic:
 
 ```{r example}
 library(nowcastingv2)
-## basic example code
+
+head(dengue_rio)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
+
+The function is fitted based on microdata. Here we have the onset date (`DT_SIN_PRI`) and report date (`DT_DIGITA`), as defined in Brazil's SINAN system. We can check the delay distribution:
+
+```{r}
+(dengue_rio$DT_DIGITA - dengue_rio$DT_SIN_PRI) |>
+  as.integer() |>
+  quantile(probs = seq(0, 1, by=0.05))
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+We then fit the nowcasting model informing, mainly, the variable names for both dates:
 
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r ncast}
+ncast_fit <- dengue_rio |>
+  nowcasting_v2(
+    onset_var = "DT_SIN_PRI",
+    report_var = "DT_DIGITA",
+    time_struc = "rw1", 
+    max_delay = 15,
+    days_forecast = 5
+  )
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+
+The resulting object is a list of 4 `tibbles`, but the main one is `daily_estimates`.
+
+```{r}
+head(ncast_fit$daily_estimates)
+```
+
+Based on that object, we can generate the following plots:
+
+```{r, fig.width=12}
+library(tidyverse)
+ncast_fit$daily_estimates %>% 
+  ggplot(aes(x=onset, y=n)) + 
+  geom_bar(aes(fill=observed), stat="identity", position = "stack") + 
+  theme_minimal() + 
+  theme(legend.position = "top")
+```
+
+
+
+We can check how the delay effects change over time:
+
+```{r, fig.width=12, fig.height=8}
+head(ncast_fit$delay_matrix_df)
+
+ncast_fit$delay_matrix_df %>% 
+  mutate(week_date = aweek::get_date(epi_week, epi_year)) %>% 
+  ggplot(aes(x=week_date)) + 
+  geom_ribbon(aes(ymin=q_025, ymax=q_975), alpha=0.3) + 
+  geom_line(aes(y=q_50, group=delay, color=q_50 > 0)) + 
+  geom_hline(yintercept = 0, linetype="dashed") +
+  guides(color = "none") +
+  facet_wrap(~delay) + 
+  theme_bw()
+```
+
+We can see that, in this example, notifications with 1-day delay became more frequent over time, and delays >= 10 days had the opposite effect. This justifies the needs to take into account time varying delay effects.
+
+Finally, we can plot the weekly estimates with their credible intervals (95%):
+
+```{r, fig.width=12}
+ncast_fit$delay_df %>% 
+  filter(onset <= ymd("2024-01-20")) %>% # only complete weeks
+  mutate(
+    n = case_when(
+      is.na(n_obs) ~ n,
+      TRUE ~ n_obs
+    ),
+    low = case_when(
+      is.na(n_obs) ~ low,
+      TRUE ~ n_obs
+    ),
+    upp = case_when(
+      is.na(n_obs) ~ upp,
+      TRUE ~ n_obs
+    )
+  ) %>% 
+  summarise(n_obs = sum(n_obs, na.rm=T),
+            n=sum(n, na.rm=T),
+            low = sum(low, na.rm=T),
+            upp = sum(upp, na.rm=T),
+            .by=c(epi_week, epi_year)) %>% 
+  mutate(week_day = aweek::get_date(epi_week, epi_year)) %>% 
+  ggplot(aes(x=week_day)) + 
+  geom_ribbon(aes(ymin=low, ymax=upp), alpha=0.3) + 
+  geom_line(aes(y=n_obs, linetype="Observed")) + 
+  geom_line(aes(y=n, linetype="estimated")) + 
+  scale_linetype_manual(values = c("dashed", "solid"), name = "") +
+  theme_bw() + 
+  theme(legend.position = "top")
+```
+
