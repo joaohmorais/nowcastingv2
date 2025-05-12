@@ -13,12 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# nowcastingv2 <img src="man/figures/logo.png" align="right" height="104" alt="" />
+# nowcastingv2 <img src="man/figures/logo.png" align="right" height="104"/>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-`{nowcastingv2}` is based on existing package [nowcaster](https://covid19br.github.io/nowcaster/), and proposes an extension on the time structures used by `{INLA}` models allowing for time-varying delay effects. It is specially useful when the pattern of delays changes over time, which is feasible given differences in epidemic patterns and surveillance policies. It also extends the outputs generated, allowing for daily estimates visualizations, as well as time varying delays and day-of-week effects. 
+`{nowcastingv2}` is based on existing package [nowcaster](https://covid19br.github.io/nowcaster/), and proposes an extension on the time structures used by `{INLA}` models allowing for time-varying delay effects. It is specially useful when the pattern of delays changes over time, which is feasible given differences in epidemic patterns and surveillance policies. It also extends the outputs generated, allowing for daily estimates visualizations, as well as time varying delays and day-of-week effects.
 
 This R package was developed in Rio de Janeiro's Health Secretariat, at the [Center of Epidemiological Intelligence (CIE)](https://epirio.svs.rio.br/), during [Dengue 2024 outbreak](https://www.atachcommunity.com/resources/first-wins-library/effective-preparedness-and-response-to-dengue-through-multisectoral-coordination/) in the city.
 
@@ -26,11 +27,10 @@ This R package was developed in Rio de Janeiro's Health Secretariat, at the [Cen
 
 This package depends on the `INLA` package, which is not on CRAN. You must install it manually:
 
-```r
+``` r
 install.packages("INLA", 
   repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable")
 )
-
 ```
 
 And then:
@@ -49,8 +49,6 @@ library(nowcastingv2)
 
 head(dengue_rio)
 ```
-
-
 
 The function is fitted based on microdata. Here we have the onset date (`DT_SIN_PRI`) and report date (`DT_DIGITA`), as defined in Brazil's SINAN system. We can check the delay distribution:
 
@@ -73,7 +71,6 @@ ncast_fit <- dengue_rio |>
   )
 ```
 
-
 The resulting object is a list of 4 `tibbles`, but the main one is `daily_estimates`.
 
 ```{r}
@@ -91,8 +88,6 @@ ncast_fit$daily_estimates %>%
   theme(legend.position = "top")
 ```
 
-
-
 We can check how the delay effects change over time:
 
 ```{r, fig.width=12, fig.height=8}
@@ -109,7 +104,7 @@ ncast_fit$delay_matrix_df %>%
   theme_bw()
 ```
 
-We can see that, in this example, notifications with 1-day delay became more frequent over time, and delays >= 10 days had the opposite effect. This justifies the needs to take into account time varying delay effects.
+We can see that, in this example, notifications with 1-day delay became more frequent over time, and delays \>= 10 days had the opposite effect. This justifies the needs to take into account time varying delay effects.
 
 Finally, we can plot the weekly estimates with their credible intervals (95%):
 
@@ -145,3 +140,8 @@ ncast_fit$delay_df %>%
   theme(legend.position = "top")
 ```
 
+# Use and Citation
+
+Please reference the package usage with:
+
+> MORAIS, João Henrique de Araujo , ATRASO DE NOTIFICAÇÃO: ADAPTAÇÃO DE MODELOS DE NOWCASTING PARA ESPECIFICIDADES TEMPORAIS. Em: Anais do 12º Congresso Brasileiro de Epidemiologia - Vol.3; Rio de Janeiro.RJ.Brasil. Campinas : Galoá; 2024. Available in: <https://proceedings.science/epi-2024/trabalhos/atraso-de-notificacao-adaptacao-de-modelos-de-nowcasting-para-especificidades-te?lang=pt-br>

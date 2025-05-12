@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nowcastingv2 <img src="man/figures/logo.png" align="right" height="104" alt="" />
+# nowcastingv2 <img src="man/figures/logo.png" align="right" height="104"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -117,12 +117,12 @@ head(ncast_fit$delay_matrix_df)
 #> # A tibble: 6 × 11
 #>   week_id epi_week epi_year delay   mean     sd  q_025   q_50   q_975   mode          kld
 #>     <int>    <dbl>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>        <dbl>
-#> 1       1        1     2023     0 -1.77  0.188  -2.15  -1.77  -1.41   -1.77  0.0000000669
-#> 2       1        1     2023     1 -0.321 0.133  -0.596 -0.316 -0.0722 -0.316 0.000000210 
-#> 3       1        1     2023     2  0.362 0.110   0.135  0.365  0.572   0.365 0.000000147 
-#> 4       1        1     2023     3  0.586 0.106   0.362  0.592  0.780   0.608 0.000000442 
-#> 5       1        1     2023     4  0.726 0.0981  0.518  0.730  0.905   0.745 0.000000420 
-#> 6       1        1     2023     5  0.665 0.0925  0.472  0.669  0.837   0.683 0.000000283
+#> 1       1        1     2023     0 -1.77  0.189  -2.15  -1.77  -1.41   -1.77  0.0000000749
+#> 2       1        1     2023     1 -0.321 0.133  -0.599 -0.316 -0.0723 -0.296 0.000000230 
+#> 3       1        1     2023     2  0.362 0.111   0.134  0.365  0.571   0.365 0.000000158 
+#> 4       1        1     2023     3  0.585 0.107   0.357  0.591  0.779   0.607 0.000000525 
+#> 5       1        1     2023     4  0.725 0.0989  0.514  0.730  0.904   0.745 0.000000492 
+#> 6       1        1     2023     5  0.664 0.0931  0.468  0.668  0.836   0.683 0.000000328
 
 ncast_fit$delay_matrix_df %>% 
   mutate(week_date = aweek::get_date(epi_week, epi_year)) %>% 
@@ -178,3 +178,13 @@ ncast_fit$delay_df %>%
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
+# Use and Citation
+
+Please reference the package usage with:
+
+> MORAIS, João Henrique de Araujo , ATRASO DE NOTIFICAÇÃO: ADAPTAÇÃO DE
+> MODELOS DE NOWCASTING PARA ESPECIFICIDADES TEMPORAIS. Em: Anais do 12º
+> Congresso Brasileiro de Epidemiologia - Vol.3; Rio de
+> Janeiro.RJ.Brasil. Campinas : Galoá; 2024. Available in:
+> <https://proceedings.science/epi-2024/trabalhos/atraso-de-notificacao-adaptacao-de-modelos-de-nowcasting-para-especificidades-te?lang=pt-br>
