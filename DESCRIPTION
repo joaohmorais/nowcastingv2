@@ -19,3 +19,5 @@ Imports:
 Depends: 
     R (>= 3.5)
 LazyData: true
+URL: https://github.com/joaohmorais/nowcastingv2
+BugReports: https://github.com/joaohmorais/nowcastingv2/issues
