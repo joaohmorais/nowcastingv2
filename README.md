@@ -1,13 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<figure>
-<img
-src="https://github.com/joaohmorais/nowcastingv2/blob/50ed31579f9f9ea7926efd34a005848721a1b064/assets/logo.png?raw=true"
-alt="Logo" />
-<figcaption aria-hidden="true">Logo</figcaption>
-</figure>
-
 # nowcastingv2
 
 <!-- badges: start -->
@@ -124,12 +117,12 @@ head(ncast_fit$delay_matrix_df)
 #> # A tibble: 6 × 11
 #>   week_id epi_week epi_year delay   mean     sd  q_025   q_50   q_975   mode          kld
 #>     <int>    <dbl>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>        <dbl>
-#> 1       1        1     2023     0 -1.77  0.188  -2.15  -1.77  -1.41   -1.77  0.0000000729
-#> 2       1        1     2023     1 -0.320 0.132  -0.596 -0.314 -0.0725 -0.294 0.000000231 
-#> 3       1        1     2023     2  0.363 0.110   0.136  0.366  0.571   0.366 0.000000156 
-#> 4       1        1     2023     3  0.587 0.106   0.361  0.593  0.780   0.609 0.000000515 
-#> 5       1        1     2023     4  0.726 0.0982  0.517  0.732  0.905   0.747 0.000000484 
-#> 6       1        1     2023     5  0.666 0.0924  0.471  0.670  0.836   0.684 0.000000321
+#> 1       1        1     2023     0 -1.77  0.191  -2.15  -1.77  -1.40   -1.77  0.0000000516
+#> 2       1        1     2023     1 -0.325 0.134  -0.600 -0.321 -0.0723 -0.321 0.000000161 
+#> 3       1        1     2023     2  0.359 0.111   0.133  0.362  0.572   0.362 0.000000117 
+#> 4       1        1     2023     3  0.579 0.106   0.357  0.583  0.776   0.600 0.000000334 
+#> 5       1        1     2023     4  0.719 0.0987  0.513  0.724  0.902   0.739 0.000000322 
+#> 6       1        1     2023     5  0.660 0.0934  0.466  0.663  0.834   0.663 0.000000231
 
 ncast_fit$delay_matrix_df %>% 
   mutate(week_date = aweek::get_date(epi_week, epi_year)) %>% 
