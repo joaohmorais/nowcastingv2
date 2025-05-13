@@ -192,7 +192,33 @@ nowcasting_v2 <- function(
       is.na(n_obs) ~ pred,
       TRUE ~ n_obs
     )) %>%
-    dplyr::select(-onset_num)
+    dplyr::add_row(
+      delay_df_over %>%
+        dplyr::rename(onset = dplyr::all_of(onset_var)) %>%
+        dplyr::mutate(
+          week_day = factor(lubridate::wday(onset, label=T), ordered=F),
+          week_day_report = factor(lubridate::wday(onset + delay, label=T), ordered=F),
+          epi_week = lubridate::epiweek(onset),
+          epi_year = lubridate::epiyear(onset)
+        ) %>%
+        dplyr::left_join(
+          delay_df %>%
+            dplyr::select(epi_week, epi_year) %>%
+            dplyr::distinct() %>%
+            dplyr::arrange(epi_year, epi_week) %>%
+            dplyr::mutate(week_id = seq_len(nrow(.))),
+          by = c("epi_week", "epi_year")
+        ) %>%
+        dplyr::mutate(
+          delay_id = delay + 1,
+          n_obs = n,
+          pred = NA_real_,
+          low = NA_real_,
+          upp = NA_real_
+        )
+    ) %>%
+    dplyr::select(-onset_num) %>%
+    dplyr::arrange(onset, delay)
 
   daily_estimates <- delay_df %>%
     dplyr::mutate(observed = dplyr::case_when(
@@ -200,11 +226,6 @@ nowcasting_v2 <- function(
       !is.na(n_obs) ~ "observed"
     )) %>%
     dplyr::select(onset, observed, n) %>%
-    tibble::add_row(
-      delay_df_over %>%
-        dplyr::mutate(observed = "observed") %>%
-        dplyr::select(onset = dplyr::all_of(onset_var), n, observed)
-    ) %>%
     dplyr::summarise(n=sum(n), .by=c(onset, observed)) %>%
     dplyr::mutate(
       epi_week = lubridate::epiweek(onset),
