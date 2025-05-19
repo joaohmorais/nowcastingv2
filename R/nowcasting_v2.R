@@ -149,23 +149,32 @@ nowcasting_v2 <- function(
 
   # Results
 
-  delay_matrix_df <- ncast_fit$summary.random$delay_id %>%
-    tibble::as_tibble() %>%
-    dplyr::mutate(
-      week_id = rep(seq_len(length(unique(delay_df$week_id))), each = max_delay + 1)
-    ) %>%
-    dplyr::left_join(
-      delay_df %>%
-        dplyr::select(week_id, epi_week, epi_year) %>%
-        dplyr::distinct(),
-      by="week_id"
-    ) %>%
-    dplyr::mutate(week_date = aweek::get_date(epi_week, epi_year, start = "Sunday"), delay=ID-1) %>%
-    dplyr::rename(q_025 = `0.025quant`,
-           q_50 = `0.5quant`,
-           q_975 = `0.975quant`) %>%
-    dplyr::select(week_id, epi_week, epi_year, delay, mean:kld)
-
+  if (allow_time_varying) {
+    delay_matrix_df <- ncast_fit$summary.random$delay_id %>%
+      tibble::as_tibble() %>%
+      dplyr::mutate(
+        week_id = rep(seq_len(length(unique(delay_df$week_id))), each = max_delay + 1)
+      ) %>%
+      dplyr::left_join(
+        delay_df %>%
+          dplyr::select(week_id, epi_week, epi_year) %>%
+          dplyr::distinct(),
+        by="week_id"
+      ) %>%
+      dplyr::mutate(week_date = aweek::get_date(epi_week, epi_year, start = "Sunday"), delay=ID-1) %>%
+      dplyr::rename(q_025 = `0.025quant`,
+                    q_50 = `0.5quant`,
+                    q_975 = `0.975quant`) %>%
+      dplyr::select(week_id, epi_week, epi_year, delay, mean:kld)
+  } else {
+    delay_matrix_df <- ncast_fit$summary.random$delay_id %>%
+      tibble::as_tibble() %>%
+      dplyr::mutate(delay=ID-1) %>%
+      dplyr::rename(q_025 = `0.025quant`,
+                    q_50 = `0.5quant`,
+                    q_975 = `0.975quant`) %>%
+      dplyr::select(delay, mean:kld)
+  }
 
   daily_df <- ncast_fit$summary.random$onset_num %>%
     tibble::as_tibble() %>%
